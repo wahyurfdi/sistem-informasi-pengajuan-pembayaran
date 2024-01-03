@@ -20,8 +20,8 @@
                         <div class="col-5">
                             <form class="w-100">
                                 <div class="d-flex">
-                                    <input type="text" class="form-control" placeholder="Search..." name="search" value="{{ $filters->search }}">
-                                    <select class="form-control ms-2" name="status">
+                                    <input type="text" id="search" class="form-control" placeholder="Search..." name="search" value="{{ $filters->search }}">
+                                    <select id="status" class="form-control ms-2" name="status">
                                         <option value="">-</option>
                                         @foreach(config('app.pr_status') as $code => $status)
                                         <option value="{{ $code }}" {{ $filters->status == $code ? 'selected' : '' }}>{{ $status }}</option>
@@ -40,8 +40,8 @@
                         </div>
                         <div class="col-7">
                             <div class="float-end">
-                                <button class="btn btn-success">
-                                    <i class="bi bi-file-earmark-excel"></i> Export
+                                <button class="btn btn-primary" onclick="exportPDF()">
+                                    <i class="bi bi-file-earmark-pdf"></i> Export
                                 </button>
                             </div>
                         </div>
@@ -108,5 +108,13 @@
 		searching: false,
 		bInfo: false
 	})
+
+    const exportPDF = () => {
+        let search = $('#search').val(),
+            status = $('#status').val(),
+            url = '/cms/report/reimbursement'
+
+        window.open(`${url}?search=${search}&status=${status}&option=export-pdf`)
+    }
 </script>
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use PDF;
 use Auth;
 use Illuminate\Http\Request;
 use App\Models\PaymentRequest;
@@ -10,9 +11,11 @@ class ReportController extends Controller
 {
     public function paymentRequestIndex(Request $request)
     {
+        $option = $request->option ?? '';
+
         $userId = Auth::user()->id;
         $userRole = Auth::user()->role;
-
+        
         $filters = (object) [
             'search' => $request->search ?? '',
             'status' => $request->status ?? ''
@@ -33,6 +36,12 @@ class ReportController extends Controller
             })
             ->orderby('updated_at', 'DESC')
             ->get();
+
+        if($option == 'export-pdf') {            
+            $pdf = PDF::loadView('reports.exports.reimbursement-pdf', compact('paymentRequests'));
+        
+            return $pdf->download('Reimbursement Report.pdf');
+        }
 
         return view('reports.reimbursement', compact('paymentRequests', 'filters'));
     }
